@@ -1,7 +1,8 @@
 # a_matter_of_ephemerality
-Source Codes, Scripts, and Data for the paper "A matter of ephemerality. The study of Kel Tadrart Tuareg (SW Libya) campsites via quantitative spatial analysis" by by  Biagetti, S., Crema, E.R., and Alcaina-Mateos, J.
+Source Codes, Scripts, and Data for the paper "A matter of ephemerality. The study of Kel Tadrart Tuareg (SW Libya) campsites via quantitative spatial analysis" 
 
 ## Paper Reference 
+Biagetti, S., Crema, E.R., and Alcaina-Mateos, J.(Under Review), A matter of ephemerality. The study of Kel Tadrart Tuareg (SW Libya) campsites via quantitative spatial analysis, Ecology and Society
 
 ## Author of the Repository:
 Enrico R. Crema (enrico.crema@gmail.com)
