@@ -1,8 +1,7 @@
 ## Load Required Packages ##
-
-library(maptools) #version 0.8-36
-library(spatstat) #version 1.41-1
-library(rgdal) #version 0.9-1
+library(maptools)
+library(spatstat) 
+library(rgdal)
 
 ## Read Dataset ##
 

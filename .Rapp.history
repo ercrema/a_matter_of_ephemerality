@@ -1,7 +1,7 @@
 setwd("a_matter_of_ephemerality/")
-library(maptools) #version 0.8-36#
-library(spatstat) #version 1.41-1#
-library(rgdal) #version 0.9-1#
+library(maptools)#
+library(spatstat) #
+library(rgdal)#
 #
 ## Read Dataset ###
 #
@@ -59,17 +59,7 @@ for (x in 1:NsitesDiwan)#
     CoreDiwanList[[x]]<-subset(data.CoreDiwan, ID_SITE==unique(data.CoreDiwan$ID_SITE)[x])#
 }#
 names(CoreList)=unique(data.Core$ID_SITE)#
-names(ExtList)=unique(data.Ext$ID_SITE)#
-## Export to ESRI Shapefile#
-for (i in 1:Nsites)#
-{#
-    writeOGR(CoreList[[i]],dsn='./shapefiles',layer=paste('coresite', i, sep='_'), driver='ESRI Shapefile')#
-    writeOGR(ExtList[[i]],dsn='./shapefiles',layer=paste('extsite', i, sep='_'), driver='ESRI Shapefile')#
-}#
-#######################################################
-## Evaluate Window Size using Ripas-Ripley Estimate ###
-#######################################################
-#
+names(ExtList)=unique(data.Ext$ID_SITE)
 windowListCore <- vector("list",length=length(unique(data.Core$ID_SITE)))#
 windowListExt <- vector("list",length=length(unique(data.Ext$ID_SITE)))#
 names(windowListCore)=unique(data.Core$ID_SITE)#
@@ -79,40 +69,10 @@ for (x in 1:Nsites)#
     windowListCore[[x]]<-ripras(coordinates(CoreList[[x]])[,1],coordinates(CoreList[[x]])[,2])#
     windowListExt[[x]]<-ripras(coordinates(ExtList[[x]])[,1],coordinates(ExtList[[x]])[,2])#
 }#
-SiteAreas=data.frame(sitename=unique(data$ID_SITE),#
-    CoreArea=unlist(lapply(windowListCore,area)),#
-    ExtArea=unlist(lapply(windowListExt,area)))#
-#
-## Export windows to ESRI Shapefile#
-for (i in 1:Nsites)#
-{#
-    auxCore <- as(windowListCore[[i]], "SpatialPolygons")#
-    auxExt <- as(windowListExt[[i]], "SpatialPolygons")#
-    auxCore <- SpatialPolygonsDataFrame(auxCore, data.frame(ID=i))#
-    auxExt <- SpatialPolygonsDataFrame(auxExt, data.frame(ID=i))#
-    writeOGR(auxCore, dsn = "./shapefiles", layer=paste('window_Core', i, sep='_'), driver = "ESRI Shapefile")  #
-    writeOGR(auxExt, dsn = "./shapefiles", layer=paste('window_Ext', i, sep='_'), driver = "ESRI Shapefile")  #
-}
 SiteAreas=data.frame(sitename=unique(data.Core$ID_SITE),#
     CoreArea=unlist(lapply(windowListCore,area)),#
-    ExtArea=unlist(lapply(windowListExt,area)))
-SiteAreas
+    ExtArea=unlist(lapply(windowListExt,area)))#
 write.csv(SiteAreas,row.names=FALSE,"./tables/siteareas.csv")
-par(mfrow=c(1,2))#
-plot(result1$r,result1$hi,type="n",main="Standard Permutation",xlab="Distance (in meters)",ylab="L function")#
-segregation=result1$r[which(result1$obs<result1$lo)]#
-rect(xleft=min(segregation),xright=max(segregation),ybottom=-1000,ytop=1000,col=rgb(1,0,0,0.1),border=NA)#
-polygon(x=c(result1$r,rev(result1$r)),y=c(result1$hi,rev(result1$lo)),col="lightgrey",border=NA)#
-lines(result1$r,result1$mmean,lty=2,col=2,lwd=1.5)#
-lines(result1$r,result1$obs,lty=1,col=1,lwd=1.5)#
-legend("bottomright",legend=c("Observed Statistic","Expected Statistic","95% Confidence Envelope","Significant Segregation"),lty=c(1,2,NA,NA),col=c(1,2,"lightgrey",rgb(1,0,0,0.1)),lwd=c(1.5,1.5,NA,NA),pch=c(NA,NA,15,15),cex=0.8,pt.cex=1.5)#
-#
-plot(result2$r,result2$hi,type="n",main="Stratified Permutation",xlab="Distance (in meters)",ylab="L function")#
-segregation=result2$r[which(result2$obs<result2$lo)]#
-rect(xleft=min(segregation),xright=max(segregation),ybottom=-1000,ytop=1000,col=rgb(1,0,0,0.1),border=NA)#
-polygon(x=c(result2$r,rev(result2$r)),y=c(result2$hi,rev(result2$lo)),col="lightgrey",border=NA)#
-lines(result2$r,result2$mmean,lty=2,col=2,lwd=1.5)#
-lines(result2$r,result2$obs,lty=1,col=1,lwd=1.5)
 ## Remove All columns except 'category' ###
 CoreList.ppp = lapply(CoreList,function(x){x@data=data.frame(category=x@data$category);return(x)})#
 for (x in 1:Nsites)#
@@ -160,6 +120,13 @@ rect(xleft=min(segregation),xright=max(segregation),ybottom=-1000,ytop=1000,col=
 polygon(x=c(result2$r,rev(result2$r)),y=c(result2$hi,rev(result2$lo)),col="lightgrey",border=NA)#
 lines(result2$r,result2$mmean,lty=2,col=2,lwd=1.5)#
 lines(result2$r,result2$obs,lty=1,col=1,lwd=1.5)
+simulatedPoints<-vector("list",length=nsim)#
+for (s in 1:nsim)#
+{#
+    tmpList=lapply(CoreList.ppp,rlabel)	#
+    simulatedPoints[[s]]=unique.ppp(Reduce(function(...) superimpose(...,W= mergedWindow), tmpList))	#
+}
+result2=envelope(AggregatedPointPattern,Lcross,i="D",j="L",r=seq(0,100,1),correction="iso",nsim=nsim, simulate=simulatedPoints)
 par(mfrow=c(1,2))#
 plot(result1$r,result1$hi,type="n",main="Standard Permutation",xlab="Distance (in meters)",ylab="L function")#
 segregation=result1$r[which(result1$obs<result1$lo)]#
@@ -175,9 +142,6 @@ rect(xleft=min(segregation),xright=max(segregation),ybottom=-1000,ytop=1000,col=
 polygon(x=c(result2$r,rev(result2$r)),y=c(result2$hi,rev(result2$lo)),col="lightgrey",border=NA)#
 lines(result2$r,result2$mmean,lty=2,col=2,lwd=1.5)#
 lines(result2$r,result2$obs,lty=1,col=1,lwd=1.5)
-dev.print(device=pdf,"./figures/figure3.pdf")
-## Create Z-transformed distance matrices#
-#
 distMatrices <- list()#
 diwan <- list()#
 allHuts <- list()#
