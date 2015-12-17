@@ -13,7 +13,7 @@ Jose Alcaina-Mateos (j.alcaina.m@gmail.com)
 ## Licences
 Text: CC-BY (http://creativecommons.org/licenses/by/4.0/)
 
-Code: MIT (http://opensource.org/licenses/MIT year: 2015, copyright holder: Enrico R. Crema)
+Code: MIT (http://opensource.org/licenses/MIT year: 2015, copyright holder: Enrico R. Crema, Jose Alcaina-Mateos)
 
 Data: CC0 (http://creativecommons.org/publicdomain/zero/1.0/) attribution requested in reuse
 
