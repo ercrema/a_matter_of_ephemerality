@@ -171,7 +171,7 @@ polygon(x=c(result2$r,rev(result2$r)),y=c(result2$hi,rev(result2$lo)),col="light
 lines(result2$r,result2$mmean,lty=2,col=2,lwd=1.5)
 lines(result2$r,result2$obs,lty=1,col=1,lwd=1.5)
 
-dev.print(device=pdf,"./figures/figure3.pdf")
+dev.print(device=pdf,"./figures/figure4.pdf")
 
 ###################################################################
 ## Assess Segregation/Aggregation Domestic vs Livestock Features ##
